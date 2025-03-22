@@ -13,6 +13,8 @@ class Login(QDialog):
         # Initiation QDialog class
         super().__init__(parent)
         
+        self.setGeometry(100, 100, 350, 250)
+        
         # Initialising self.username to None
         self.username = None
         
@@ -35,9 +37,11 @@ class Login(QDialog):
         login_button.clicked.connect(self.checkCredentials)
 
         signup_button = QPushButton("Sign Up")
-
-        forgot_password_link = QLabel("Forgot Password ?")
+        
+        forgot_password_link = QLabel('<a href="#">Forgot Password?</a>')
         forgot_password_link.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        forgot_password_link.setOpenExternalLinks(False)  # Prevent opening a browser
+        forgot_password_link.linkActivated.connect(self.forgot_password)
         
         
         self.message_label.setStyleSheet("color: Black; font-size: 19px; padding:10px")
@@ -59,6 +63,9 @@ class Login(QDialog):
         layout.addWidget(signup_button, 8, 1, 1, 1)
         
         self.setLayout(layout)
+    
+    def forgot_password(self):
+        print("show forgot password window")
     
     def checkCredentials(self):
         username = self.username_entry.text()
