@@ -45,19 +45,17 @@ class Login(QDialog):
         self.message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         username_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         password_label.setAlignment(Qt.AlignmentFlag.AlignRight)
-
-        spacer = QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
         
         layout.addWidget(self.message_label, 0, 0, 1, 3)
         layout.addWidget(username_label, 1, 0, 1, 1)
         layout.addWidget(self.username_entry, 1, 1, 1, 2)
         layout.addWidget(password_label, 2, 0, 1, 1)
         layout.addWidget(self.password_entry, 2, 1, 1, 2)
-        layout.addItem(spacer, 3, 0, 1, 3)
+        layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding), 3, 0, 1, 3)
         layout.addWidget(login_button, 4, 0, 1, 3)
-        layout.addItem(spacer, 5, 0, 1, 3)
+        layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding), 5, 0, 1, 3)
         layout.addWidget(forgot_password_link, 6, 0, 1, 3)
-        layout.addItem(spacer, 7, 0, 1, 3)
+        layout.addItem(QSpacerItem(20, 20, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding), 7, 0, 1, 3)
         layout.addWidget(signup_button, 8, 1, 1, 1)
         
         self.setLayout(layout)
