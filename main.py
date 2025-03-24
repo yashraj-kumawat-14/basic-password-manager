@@ -3,7 +3,8 @@
 
 # Importing necessary modules and libraries
 
-from PySide6.QtWidgets import QWidget, QApplication, QDialog, QLabel, QVBoxLayout, QHBoxLayout
+from PySide6.QtWidgets import QWidget, QApplication, QDialog, QLabel, QVBoxLayout, QHBoxLayout, QListWidget, QAbstractItemView, QListWidgetItem
+from PySide6.QtGui import QIcon, QPixmap
 from dialogs.login import Login
 import sys
 
@@ -30,9 +31,15 @@ class Main(QWidget):
         
         # Initiating username
         self.username = username
-        
+
+        password_list = QListWidget(self)
+        password_list.setSelectionMode(QAbstractItemView.SelectionMode.SingleSelection)
+
+        password_list.addItem(QListWidgetItem(QIcon("yas.png"), "amaxon.com"))
+
         main_layout.addWidget(passwords_label)
         main_layout.addWidget(information_label)
+        main_layout.addWidget(password_list)
         
         # Setting applications main layout
         self.setLayout(main_layout)
@@ -45,7 +52,7 @@ def authenticate():
     if  result == QDialog.Accepted:
         print("loggedin")
         return login.username
-    return None        
+    return None
 
 
 if __name__ == "__main__":
