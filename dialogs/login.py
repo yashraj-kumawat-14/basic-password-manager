@@ -3,9 +3,16 @@
 
 # Importing necessary modules and libraries
 
-from PySide6.QtWidgets import QDialog, QHBoxLayout, QVBoxLayout, QLabel, QLineEdit, QApplication, QGridLayout, QPushButton, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QApplication, QGridLayout, QPushButton, QSpacerItem, QSizePolicy
 from PySide6.QtCore import Qt
 import sys
+import os
+
+# Add the project root to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+
+from model.User import User
+
 
 # Login class for displaying login window and handling the logic of login
 class Login(QDialog):
@@ -70,8 +77,13 @@ class Login(QDialog):
     def checkCredentials(self):
         username = self.username_entry.text()
         password = self.password_entry.text()
-        self.username = "yashraj14"
-        self.accept()
+        user_id = User().check_user_exists(username=username, password=password)
+        if(user_id):
+            print("user exists")
+            self.accept()
+        else:
+            print("user don't exists")
+            self.reject()
         
 
 if __name__ == "__main__":
