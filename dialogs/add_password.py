@@ -1,73 +1,69 @@
 import sys
-from PySide6.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLineEdit, QPushButton, QLabel, QGridLayout
-from PySide6.QtGui import QIcon
+from PySide6.QtWidgets import QApplication, QVBoxLayout, QDialog, QHBoxLayout, QLineEdit, QPushButton, QLabel, QGridLayout, QMessageBox
+import sys
+import os
 
-class MyWindow(QWidget):
-    def __init__(self):
-        super().__init__()
+# Add the project root to sys.path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+
+from model.User import User
+from model.Password import Password
+
+class AddPassword(QDialog):
+    def __init__(self, parent=None, user_id=1):
+        super().__init__(parent=parent)
+        self.user_id = user_id
 
         self.setWindowTitle("Add Password")
         main_layout = QVBoxLayout()
         grid_layout = QGridLayout()
+
+        self.setGeometry(400, 300, 550, 200)
 
         # Username field
         self.username_label = QLabel("Username")
         self.username = QLineEdit()
         self.username.setPlaceholderText("Enter your username")
         self.username.setStyleSheet("background-color: #e0e0e0; border-radius: 5px; padding: 5px;")
-        self.copy_username = QPushButton(QIcon("./images/copy_icon.png"), "")
 
         # Password field
         self.password_label = QLabel("Password")
         self.password = QLineEdit()
-        self.password.setPlaceholderText("Secure your password")
+        self.password.setPlaceholderText("Enter a strong password")
         self.password.setEchoMode(QLineEdit.EchoMode.Password)
         self.password.setStyleSheet("background-color: #e0e0e0; border-radius: 5px; padding: 5px;")
-        self.show_password = QPushButton(QIcon("./images/eye_icon.png"), "")
 
         # Site field
         self.sites_label = QLabel("Website URL")
         self.sites = QLineEdit()
         self.sites.setPlaceholderText("https://example.com")
         self.sites.setStyleSheet("background-color: #e0e0e0; border-radius: 5px; padding: 5px;")
-        self.sites.setReadOnly(True)
 
         # Note field
         self.note_label = QLabel("Note")
         self.note = QLineEdit()
         self.note.setPlaceholderText("Add additional details (optional)")
         self.note.setStyleSheet("background-color: #e0e0e0; border-radius: 5px; padding: 5px;")
-        self.note.setReadOnly(True)
 
         # Grid Layout
         grid_layout.addWidget(self.username_label, 0, 0)
         grid_layout.addWidget(self.username, 0, 1)
-        grid_layout.addWidget(self.copy_username, 0, 2)
 
-        grid_layout.addWidget(self.sites_label, 0, 3)
-        grid_layout.addWidget(self.sites, 0, 4)
+        grid_layout.addWidget(self.sites_label, 0, 2)
+        grid_layout.addWidget(self.sites, 0, 3)
 
         grid_layout.addWidget(self.password_label, 1, 0)
         grid_layout.addWidget(self.password, 1, 1)
-        grid_layout.addWidget(self.show_password, 1, 2)
 
-        grid_layout.addWidget(self.note_label, 1, 3)
-        grid_layout.addWidget(self.note, 1, 4)
+        grid_layout.addWidget(self.note_label, 1, 2)
+        grid_layout.addWidget(self.note, 1, 3)
 
         main_layout.addLayout(grid_layout)
 
         # Button layout
         button_layout = QHBoxLayout()
-        self.edit_button = QPushButton("Edit")
-        self.delete_button = QPushButton("Delete")
-        self.share_button = QPushButton("Share")
-
         self.save_button = QPushButton("Save")
         self.cancel_button = QPushButton("Cancel")
-
-        # Initially hide Save & Cancel buttons
-        self.save_button.hide()
-        self.cancel_button.hide()
 
         # Apply styles
         common_css = '''
@@ -76,7 +72,6 @@ class MyWindow(QWidget):
                 border-radius: 10px;
                 padding: 5px;
                 background-color: white;
-                transition: background-color 0.2s ease-in-out;
             }
             QPushButton:hover {
                 background-color: #F9FAFB;
@@ -85,15 +80,11 @@ class MyWindow(QWidget):
                 background-color: #F0F0F0;
             }
         '''
-        
-        for btn in [self.share_button, self.edit_button, self.delete_button, self.save_button, self.cancel_button]:
+
+        for btn in [self.save_button, self.cancel_button]:
             btn.setStyleSheet(common_css)
 
         # Add buttons to layout
-        button_layout.addWidget(self.edit_button)
-        button_layout.addWidget(self.delete_button)
-        button_layout.addStretch()
-        button_layout.addWidget(self.share_button)
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
 
@@ -101,30 +92,44 @@ class MyWindow(QWidget):
         self.setLayout(main_layout)
 
         # Connect buttons
-        self.edit_button.clicked.connect(self.enable_editing)
-        self.cancel_button.clicked.connect(self.disable_editing)
+        self.cancel_button.clicked.connect(self.reject)
 
-    def enable_editing(self):
-        """Enable editing and show Save & Cancel buttons."""
-        self.sites.setReadOnly(False)
-        self.note.setReadOnly(False)
+        self.save_button.clicked.connect(self.save_password)
+
+    def save_password(self):
+        username = self.username.text()
+        password = self.password.text()
+        site = self.sites.text()
+        note = self.note.text()
         
-        self.save_button.show()
-        self.cancel_button.show()
-        self.edit_button.hide()
+        user_model = User()
+        master_username = user_model.check_user_exists_by_id(user_id=self.user_id)
+        if(not username or not site):
+            QMessageBox.critical(self, "Error", "Username and Website URL cannot be empty.")
+            return
+        elif not master_username:
+            QMessageBox.critical(self, "Error", "User doesn't exists.")
+            return
+        print("saving password...")
+        try:
+            password_model = Password()
+            password_model.add_password(user_id=self.user_id, username=username, password=password, site_name=site, note=note)
+            print("password saved")
+            self.accept()
+        except Exception as e:
+            print("Error occured", e)
+            QMessageBox.critical(self, "Error", "Password wasn't added.")
+            self.reject()
+            
 
-    def disable_editing(self):
-        """Disable editing and hide Save & Cancel buttons."""
-        self.sites.setReadOnly(True)
-        self.note.setReadOnly(True)
+      
 
-        self.save_button.hide()
-        self.cancel_button.hide()
-        self.edit_button.show()
+
+
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
-    window = MyWindow()
+    window = AddPassword()
     window.resize(650, 250)
     window.show()
     sys.exit(app.exec())

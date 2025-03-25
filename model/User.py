@@ -60,6 +60,15 @@ class User:
         if data:
             return data[0] 
         return None
+    
+    def check_user_exists_by_id(self, user_id):
+        """Check if a user exits with the given username and password"""
+        query = "SELECT username FROM users WHERE id = ?"
+        self.cursor.execute(query, (user_id,))
+        data = self.cursor.fetchone()
+        if data:
+            return data[0] 
+        return None
 
     def close_connection(self):
         """Close the database connection."""

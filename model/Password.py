@@ -16,16 +16,21 @@ class Password:
         DB_NAME = os.getenv("DB_NAME", "password_manager.db")  # Default to 'password_manager.db' if not set
         return sqlite3.connect(DB_NAME)
 
-    def add_password(self, site_name, username, password):
-        """Insert a new password record into the database."""
-        query = "INSERT INTO passwords (site_name, username, password) VALUES (?, ?, ?)"
-        self.cursor.execute(query, (site_name, username, password))
+    def add_password(self, user_id, site_name, username, password, note):
+        """Insert a new password record into the database, including a note."""
+        print(site_name, username, password, note)
+        query = "INSERT INTO passwords (user_id, site_name, username, password, note) VALUES (?, ?, ?, ?, ?)"
+        self.cursor.execute(query, (user_id, site_name, username, password, note))
         self.conn.commit()
 
-    def update_password(self, password_id, new_password):
-        """Update a stored password by ID."""
-        query = "UPDATE passwords SET password = ? WHERE id = ?"
-        self.cursor.execute(query, (new_password, password_id))
+    def update_password(self, password_id, new_password, new_note=None):
+        """Update a stored password and optionally a note by ID."""
+        if new_note is not None:
+            query = "UPDATE passwords SET password = ?, note = ? WHERE id = ?"
+            self.cursor.execute(query, (new_password, new_note, password_id))
+        else:
+            query = "UPDATE passwords SET password = ? WHERE id = ?"
+            self.cursor.execute(query, (new_password, password_id))
         self.conn.commit()
 
     def delete_password(self, password_id):
@@ -47,13 +52,13 @@ class Password:
         return self.cursor.fetchone()
     
     def get_password_by_user_id(self, user_id):
-        """Retrieve all password associated with user id."""
+        """Retrieve all passwords associated with user id."""
         query = "SELECT * FROM passwords WHERE user_id = ?"
         self.cursor.execute(query, (user_id,))
         return self.cursor.fetchall()
 
     def get_password_by_username(self, username):
-        """Retrieve all password associated with username."""
+        """Retrieve all passwords associated with a username."""
         query = "SELECT * FROM passwords WHERE username = ?"
         self.cursor.execute(query, (username,))
         return self.cursor.fetchall()
@@ -62,3 +67,5 @@ class Password:
         """Close the database connection."""
         self.conn.close()
 
+
+print(Password().get_all_passwords())

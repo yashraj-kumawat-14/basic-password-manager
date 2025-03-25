@@ -23,11 +23,11 @@ class Main(QWidget):
     """
     Main application window for the password manager.
     """
-    def __init__(self, username=None):
+    def __init__(self, user_id = None):
         super().__init__()
         self.setWindowTitle("Basic Password Manager")
-        self.username = username
-        
+        self.user_id = user_id
+
         # Create UI elements
         self.init_ui()
         
@@ -83,7 +83,13 @@ class Main(QWidget):
     def add_password(self):
         print("adding password")
         add_password = AddPassword(parent=self)
-        add_password.exec()
+        result = add_password.exec()
+        print(result)
+        if result == QDialog.Accepted:
+            print("New password added")
+            self.refresh()
+            return
+        
     
     def load_user_passwords(self):
         """
@@ -95,9 +101,11 @@ class Main(QWidget):
         #     ("3", "google.com", "234324")
         # ]
         
-        data = Password().get_password_by_username(username=self.username)
+
+
+        data = Password().get_password_by_user_id(user_id=self.user_id)
         print(data)
-                
+        self.password_list.clear()
         count = 1
         for item in data:
             print(item)
@@ -152,8 +160,11 @@ class Main(QWidget):
         
         icon_widget.setPixmap(QPixmap("./images/icons/default.png").scaled(25, 25, Qt.KeepAspectRatio, Qt.SmoothTransformation))
     
-    def veiw_password(self, password_id):
+    def view_password(self, password_id):
         print("view button pressed")
+
+    def refresh(self):
+        self.load_user_passwords()
 
 def authenticate():
     """
@@ -178,7 +189,7 @@ if __name__ == "__main__":
     #     sys.exit(0)
     
     # Launch main window
-    window = Main(username="john_doe")
+    window = Main(user_id=1)
     window.show()
     
     sys.exit(app.exec())
