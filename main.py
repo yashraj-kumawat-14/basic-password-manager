@@ -90,7 +90,6 @@ class Main(QWidget):
             self.refresh()
             return
         
-    
     def load_user_passwords(self):
         """
         Loads the user's saved passwords into the QTreeWidget.
