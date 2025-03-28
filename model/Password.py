@@ -6,6 +6,7 @@ from cryptography.fernet import Fernet
 
 # Ensure the correct path for database module import
 sys.path.append(os.path.join(os.path.dirname(__file__), "database"))
+sys.path.append(os.path.dirname(__file__))
 print(os.path.join(os.path.dirname(__file__), "database"))
 
 # Load environment variables from .env file
@@ -27,9 +28,8 @@ class Password:
             print("Generating new .env file... and encryption key")
             key = Fernet.generate_key().decode()
 
-            with open(env_path, "w") as file:
-                file.write(f"DB_NAME=password_manager.db\nSECRET_KEY={key}")  # Writing initial content
-            print(f"File '{env_path}' created successfully.")
+            from create_env import create_env_file
+            create_env_file()
 
             # Reload environment variables
             load_dotenv()

@@ -12,6 +12,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 from model.User import User
+from signup import Signup
 
 
 # Login class for displaying login window and handling the logic of login
@@ -44,6 +45,7 @@ class Login(QDialog):
         login_button.clicked.connect(self.checkCredentials)
 
         signup_button = QPushButton("Sign Up")
+        signup_button.clicked.connect(self.show_signup_form)
         
         forgot_password_link = QLabel('<a href="#">Forgot Password?</a>')
         forgot_password_link.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -70,6 +72,11 @@ class Login(QDialog):
         layout.addWidget(signup_button, 8, 1, 1, 1)
         
         self.setLayout(layout)
+    
+    def show_signup_form(self):
+        print('signup form')
+        Signup(self).exec()
+        
     
     def forgot_password(self):
         print("show forgot password window")

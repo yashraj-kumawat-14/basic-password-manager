@@ -6,7 +6,7 @@ from cryptography.fernet import Fernet
 
 sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__+"/..")), "database"))
 print(os.path.join(os.path.dirname(os.path.abspath(__file__+"/..")), "database"))
-
+sys.path.append(os.path.dirname(__file__))
 # Load environment variables from .env file
 load_dotenv()
 
@@ -26,9 +26,8 @@ class User:
             print("Generating new .env file... and encryption key")
             key = Fernet.generate_key().decode()
 
-            with open(env_path, "w") as file:
-                file.write(f"DB_NAME=password_manager.db\nSECRET_KEY={key}")  # Writing initial content
-            print(f"File '{env_path}' created successfully.")
+            from create_env import create_env_file
+            create_env_file()
 
             # Reload environment variables
             load_dotenv()
@@ -55,9 +54,13 @@ class User:
 
     def add_user(self, username, email, password):
         """Insert a new user into the database."""
-        query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
-        self.cursor.execute(query, (username, email, password))
-        self.conn.commit()
+        try:
+            query = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+            self.cursor.execute(query, (username, email, password))
+            self.conn.commit()
+            return True
+        except:
+            return False
 
     def update_user_password(self, user_id, new_password):
         """Update a user's password by ID."""
