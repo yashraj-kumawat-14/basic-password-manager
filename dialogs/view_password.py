@@ -78,7 +78,7 @@ class ViewPassword(QDialog):
         self.edit_button = QPushButton("Edit")
         self.delete_button = QPushButton("Delete")
         self.delete_button.clicked.connect(self.delete_password)
-        self.share_button = QPushButton("Share")
+        # self.share_button = QPushButton("Share")
 
         self.save_button = QPushButton("Save")
         self.cancel_button = QPushButton("Cancel")
@@ -114,17 +114,17 @@ class ViewPassword(QDialog):
             }
         """)
 
-        self.share_button.setStyleSheet("""
-            QPushButton {
-                background-color: #28A745; /* Green */
-                color: white;
-                border-radius: 8px;
-                padding: 8px 12px;
-            }
-            QPushButton:hover {
-                background-color: #1E7E34;
-            }
-        """)
+        # self.share_button.setStyleSheet("""
+        #     QPushButton {
+        #         background-color: #28A745; /* Green */
+        #         color: white;
+        #         border-radius: 8px;
+        #         padding: 8px 12px;
+        #     }
+        #     QPushButton:hover {
+        #         background-color: #1E7E34;
+        #     }
+        # """)
 
         self.save_button.setStyleSheet("""
             QPushButton {
@@ -155,7 +155,7 @@ class ViewPassword(QDialog):
         button_layout.addWidget(self.edit_button)
         button_layout.addWidget(self.delete_button)
         button_layout.addStretch()
-        button_layout.addWidget(self.share_button)
+        # button_layout.addWidget(self.share_button)
         button_layout.addWidget(self.save_button)
         button_layout.addWidget(self.cancel_button)
 
