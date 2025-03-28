@@ -23,15 +23,17 @@ class Password:
         self.cursor.execute(query, (user_id, site_name, username, password, note))
         self.conn.commit()
 
-    def update_password(self, password_id, new_password, new_note=None):
-        """Update a stored password and optionally a note by ID."""
-        if new_note is not None:
-            query = "UPDATE passwords SET password = ?, note = ? WHERE id = ?"
-            self.cursor.execute(query, (new_password, new_note, password_id))
-        else:
-            query = "UPDATE passwords SET password = ? WHERE id = ?"
-            self.cursor.execute(query, (new_password, password_id))
-        self.conn.commit()
+    def update_password(self, password_id, new_username, new_password, new_site, new_note):
+        """Update all fields of a stored password by ID."""
+        query = "UPDATE passwords SET username = ?, password = ?, site_name = ?, note = ? WHERE id = ?"
+        try:
+            self.cursor.execute(query, (new_username, new_password, new_site, new_note, password_id))
+            self.conn.commit()
+            return True
+        except Exception as e:
+            print("Database Error:", e)
+            return False
+
 
     def delete_password(self, password_id):
         """Delete a password record by ID."""
@@ -66,6 +68,3 @@ class Password:
     def close_connection(self):
         """Close the database connection."""
         self.conn.close()
-
-
-print(Password().get_all_passwords())

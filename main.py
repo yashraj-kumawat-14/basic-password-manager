@@ -14,6 +14,7 @@ from PySide6.QtCore import Qt
 from get_favicon import get_favicon
 from dialogs.login import Login
 from dialogs.add_password import AddPassword
+from dialogs.view_password import ViewPassword
 from model.User import User
 from model.Password import Password
 import os
@@ -134,7 +135,7 @@ class Main(QWidget):
                 
             button = QPushButton("View")
             button.setFixedSize(90, 25)  # Adjust button size if needed
-            button.clicked.connect(lambda _, password_id=1: self.veiw_password(password_id))
+            button.clicked.connect(lambda _, password_id=item[0]: self.view_password(password_id))
                 
             # Add button to layout and set layout to widget
             button_layout.addWidget(button)
@@ -160,7 +161,7 @@ class Main(QWidget):
         icon_widget.setPixmap(QPixmap("./images/icons/default.png").scaled(25, 25, Qt.KeepAspectRatio, Qt.SmoothTransformation))
     
     def view_password(self, password_id):
-        print("view button pressed")
+        ViewPassword(parent=self,password_id=password_id).exec()
 
     def refresh(self):
         self.load_user_passwords()
