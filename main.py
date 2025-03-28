@@ -15,7 +15,6 @@ from get_favicon import get_favicon
 from dialogs.login import Login
 from dialogs.add_password import AddPassword
 from dialogs.view_password import ViewPassword
-from model.User import User
 from model.Password import Password
 import os
 
@@ -104,7 +103,7 @@ class Main(QWidget):
 
 
         data = Password().get_password_by_user_id(user_id=self.user_id)
-        print(data)
+        print(data, "data")
         self.password_list.clear()
         count = 1
         for item in data:
@@ -174,7 +173,7 @@ def authenticate():
     result = login.exec()
     if result == QDialog.Accepted:
         print("Logged in")
-        return login.username
+        return login.user_id
     return None
 
 
@@ -183,13 +182,13 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     
     # Authenticate user (commented out for testing)
-    # username = authenticate()
-    # if not username:
-    #     print("Closing application")
-    #     sys.exit(0)
+    user_id = authenticate()
+    if not user_id:
+        print("Closing application")
+        sys.exit(0)
     
     # Launch main window
-    window = Main(user_id=1)
+    window = Main(user_id=user_id)
     window.show()
     
     sys.exit(app.exec())

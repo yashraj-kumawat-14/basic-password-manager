@@ -38,14 +38,14 @@ CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT,
 )
 
 # Insert dummy users
-cursor.execute("INSERT INTO users (username, password, email) VALUES ('john_doe', 'hashed_password1', 'john@example.com');")
+cursor.execute("INSERT INTO users (username, password, email) VALUES ('admin', '1234', 'john@example.com');")
 cursor.execute("INSERT INTO users (username, password, email) VALUES ('alice_wonder', 'hashed_password2', 'alice@example.com');")
 cursor.execute("INSERT INTO users (username, password, email) VALUES ('dev_user', 'hashed_password3', 'dev@example.com');")
 
 conn.commit()
 
 # Fetch user IDs for inserting passwords
-cursor.execute("SELECT id FROM users WHERE username = 'john_doe';")
+cursor.execute("SELECT id FROM users WHERE username = 'admin';")
 john_id = cursor.fetchone()[0]
 
 cursor.execute("SELECT id FROM users WHERE username = 'alice_wonder';")
@@ -55,9 +55,9 @@ cursor.execute("SELECT id FROM users WHERE username = 'dev_user';")
 dev_id = cursor.fetchone()[0]
 
 # Insert dummy passwords linked to users
-cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'google.com', 'john_doe', 'password123');", (john_id,))
-cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'facebook.com', 'alice_wonder', 'fb_secure_pass');", (alice_id,))
-cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'github.com', 'dev_user', 'gitpass!@#');", (dev_id,))
+# cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'google.com', 'john_doe', 'password123');", (john_id,))
+# cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'facebook.com', 'alice_wonder', 'fb_secure_pass');", (alice_id,))
+# cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'github.com', 'dev_user', 'gitpass!@#');", (dev_id,))
 
 conn.commit()
 

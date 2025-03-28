@@ -23,7 +23,7 @@ class Login(QDialog):
         self.setGeometry(100, 100, 350, 250)
         
         # Initialising self.username to None
-        self.username = None
+        self.user_id = None
         
         # Setting title to 'Login'
         self.setWindowTitle("Login")
@@ -80,6 +80,7 @@ class Login(QDialog):
         user_id = User().check_user_exists(username=username, password=password)
         if(user_id):
             print("user exists")
+            self.user_id = user_id
             self.accept()
         else:
             print("user don't exists")

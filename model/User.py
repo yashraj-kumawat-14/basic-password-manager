@@ -1,6 +1,11 @@
 import os
 import sqlite3
 from dotenv import load_dotenv
+import sys
+from cryptography.fernet import Fernet
+
+sys.path.append(os.path.join(os.path.dirname(os.path.abspath(__file__+"/..")), "database"))
+print(os.path.join(os.path.dirname(os.path.abspath(__file__+"/..")), "database"))
 
 # Load environment variables from .env file
 load_dotenv()
@@ -8,13 +13,45 @@ load_dotenv()
 
 class User:
     def __init__(self):
+        self.key=None
         self.conn = self.create_connection()
         self.cursor = self.conn.cursor()
 
     def create_connection(self):
         """Establish a connection to the database."""
-        DB_NAME = os.getenv("DB_NAME", "password_manager.db")  # Default to 'password_manager.db' if not set
-        return sqlite3.connect(DB_NAME)
+        env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
+        # Check if .env file exists
+        if not os.path.exists(env_path):
+            print("Generating new .env file... and encryption key")
+            key = Fernet.generate_key().decode()
+
+            with open(env_path, "w") as file:
+                file.write(f"DB_NAME=password_manager.db\nSECRET_KEY={key}")  # Writing initial content
+            print(f"File '{env_path}' created successfully.")
+
+            # Reload environment variables
+            load_dotenv()
+
+        key = os.getenv("SECRET_KEY")
+        if not key:
+            raise ValueError("SECRET_KEY is missing from the environment variables.")
+
+        self.cipher = Fernet(key.encode())
+        print(self.cipher, "cipher")
+
+        DB_NAME = os.getenv("DB_NAME", "password_manager.db")  # Default database name
+
+        # Absolute path to the database
+        db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", DB_NAME))
+        print("db_path:", db_path)
+
+        # Check if the database file exists
+        if not os.path.exists(db_path):
+            import schema  # Ensure `schema.py` creates the required database
+            print("Database does not exist. Creating one.")
+
+        return sqlite3.connect(db_path)
 
     def add_user(self, username, email, password):
         """Insert a new user into the database."""
