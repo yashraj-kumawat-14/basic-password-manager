@@ -27,7 +27,7 @@ class EmailSender:
         self.send_email(recipient_email, subject, body)
         return self.currentOtp  # Returning OTP for verification use
 
-# Example Usage
-email_sender = EmailSender()
-otp = email_sender.send_otp("recipient@example.com")
-print(f"OTP sent: {otp}")
+# # Example Usage
+# email_sender = EmailSender()
+# otp = email_sender.send_otp("recipient@example.com")
+# print(f"OTP sent: {otp}")

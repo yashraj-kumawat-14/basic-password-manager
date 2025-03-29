@@ -11,8 +11,10 @@ import os
 # Add the project root to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
+
 from model.User import User
-from signup import Signup
+from dialogs.signup import Signup
+from dialogs.forgot_password import ForgotPassword
 
 
 # Login class for displaying login window and handling the logic of login
@@ -80,6 +82,7 @@ class Login(QDialog):
     
     def forgot_password(self):
         print("show forgot password window")
+        ForgotPassword(self).exec()
     
     def checkCredentials(self):
         username = self.username_entry.text()

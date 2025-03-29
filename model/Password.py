@@ -21,18 +21,6 @@ class Password:
 
     def create_connection(self):
         """Establish a connection to the database."""
-        env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
-
-        # Check if .env file exists
-        if not os.path.exists(env_path):
-            print("Generating new .env file... and encryption key")
-            key = Fernet.generate_key().decode()
-
-            from create_env import create_env_file
-            create_env_file()
-
-            # Reload environment variables
-            load_dotenv()
 
         key = os.getenv("SECRET_KEY")
         if not key:

@@ -18,20 +18,6 @@ class User:
         self.cursor = self.conn.cursor()
 
     def create_connection(self):
-        """Establish a connection to the database."""
-        env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".env"))
-
-        # Check if .env file exists
-        if not os.path.exists(env_path):
-            print("Generating new .env file... and encryption key")
-            key = Fernet.generate_key().decode()
-
-            from create_env import create_env_file
-            create_env_file()
-
-            # Reload environment variables
-            load_dotenv()
-
         key = os.getenv("SECRET_KEY")
         if not key:
             raise ValueError("SECRET_KEY is missing from the environment variables.")
@@ -96,6 +82,15 @@ class User:
         """Check if a user exits with the given username and password"""
         query = "SELECT id FROM users WHERE username = ? AND password = ?"
         self.cursor.execute(query, (username, password))
+        data = self.cursor.fetchone()
+        if data:
+            return data[0] 
+        return None
+    
+    def check_user_exists_by_email(self, email):
+        """Check if a user exits with the given username and password"""
+        query = "SELECT id FROM users WHERE email = ?"
+        self.cursor.execute(query, (email, ))
         data = self.cursor.fetchone()
         if data:
             return data[0] 
