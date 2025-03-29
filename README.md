@@ -51,5 +51,5 @@ This project is licensed under the MIT License.
 ### Screenshots
 
 ---
-Made with ❤️ by Yashraj
+A vault of security 🔒, crafted by Yashraj
 
