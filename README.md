@@ -18,7 +18,7 @@ A simple and secure **Password Manager** built using **PySide6 (Qt for Python)**
 ### Steps
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/basic-password-manager.git](https://github.com/yashraj-kumawat-14/basic-password-manager
+   git clone https://github.com/yashraj-kumawat-14/basic-password-manager
    cd basic-password-manager
    ```
 2. Install dependencies:
