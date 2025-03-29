@@ -47,8 +47,17 @@ Feel free to submit issues and pull requests to improve the project.
 ## License
 This project is licensed under the MIT License.
 
----
-### Screenshots
+## Screenshots
+
+### Login Screen
+![Login Screen](screenshots/login.png)
+
+### Signup Screen
+![Signup Screen](screenshots/signup.png)
+
+### Password Manager Dashboard
+![Dashboard](screenshots/dashboard.png)
+
 
 ---
 A vault of security 🔒, crafted by Yashraj
