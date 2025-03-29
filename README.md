@@ -25,7 +25,14 @@ A simple and secure **Password Manager** built using **PySide6 (Qt for Python)**
    ```bash
    pip install -r requirements.txt
    ```
-3. Run the application:
+3. Create a `.env` file in the project root directory and add the following environment variables:
+   ```ini
+   DB_NAME=your_database_name
+   EMAIL_SENDER=your_gmail@example.com
+   EMAIL_PASSWORD=your_gmail_app_password
+   SECRET_KEY=your_secret_key_for_fernet
+   ```
+4. Run the application:
    ```bash
    python main.py
    ```
@@ -63,7 +70,6 @@ This project is licensed under the MIT License.
 
 ### View Password
 ![View Password](screenshots/view.png)
-
 
 ---
 A vault of security 🔒, crafted by Yashraj
