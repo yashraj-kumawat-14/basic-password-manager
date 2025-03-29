@@ -38,7 +38,7 @@ class User:
         self.cipher = Fernet(key.encode())
 
         # Get the database name from environment variables or use the default
-        DB_NAME = os.getenv("DB_NAME", "password_manager.db")
+        DB_NAME = os.getenv("DB_NAME")
 
         # Absolute path to the database
         db_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", DB_NAME))
