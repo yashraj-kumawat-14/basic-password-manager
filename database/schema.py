@@ -1,66 +1,56 @@
-import sqlite3
+"""
+Script to define and create the database schema for the password manager.
+"""
 
+import sqlite3  # SQLite library for database operations
+
+# Connect to the SQLite database (creates the file if it doesn't exist)
 conn = sqlite3.connect("password_manager.db")
 
+# Create a cursor object to execute SQL commands
 cursor = conn.cursor()
 
-# Enable foreign key constraints
+# Enable foreign key constraints for the database
 cursor.execute("PRAGMA foreign_keys = ON;")
 
-# Drop tables if they exist (for fresh setup)
+# Drop tables if they exist (for a fresh setup)
+# This ensures that the script can be run multiple times without errors
 cursor.execute("DROP TABLE IF EXISTS passwords;")
 cursor.execute("DROP TABLE IF EXISTS users;")
 
+# Commit the changes to the database
 conn.commit()
 
+# Create the `passwords` table
 cursor.execute(
 '''
-CREATE TABLE IF NOT EXISTS passwords (id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INT NOT NULL,
-    site_name TEXT NOT NULL,
-    username TEXT NOT NULL,
-    password TEXT NOT NULL,
-    note TEXT DEFAULT '',
-    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+CREATE TABLE IF NOT EXISTS passwords (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Unique ID for each password
+    user_id INT NOT NULL,                  -- Foreign key referencing the user
+    site_name TEXT NOT NULL,               -- Name of the website or application
+    username TEXT NOT NULL,                -- Username for the account
+    password TEXT NOT NULL,                -- Encrypted password
+    note TEXT DEFAULT '',                  -- Optional note for additional details
+    FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE  -- Cascade delete
 )
 '''
 )
 
-
+# Create the `users` table
 cursor.execute(
 '''
-CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL UNIQUE,
-    password TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE
+CREATE TABLE IF NOT EXISTS users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Unique ID for each user
+    username TEXT NOT NULL UNIQUE,         -- Unique username for the user
+    password TEXT NOT NULL,                -- Encrypted password for the user
+    email TEXT NOT NULL UNIQUE             -- Unique email address for the user
 )
 '''
 )
 
-# Insert dummy users
-cursor.execute("INSERT INTO users (username, password, email) VALUES ('admin', '1234', 'john@example.com');")
-cursor.execute("INSERT INTO users (username, password, email) VALUES ('alice_wonder', 'hashed_password2', 'alice@example.com');")
-cursor.execute("INSERT INTO users (username, password, email) VALUES ('dev_user', 'hashed_password3', 'dev@example.com');")
-
+# Commit the changes to the database
 conn.commit()
 
-# Fetch user IDs for inserting passwords
-cursor.execute("SELECT id FROM users WHERE username = 'admin';")
-john_id = cursor.fetchone()[0]
 
-cursor.execute("SELECT id FROM users WHERE username = 'alice_wonder';")
-alice_id = cursor.fetchone()[0]
-
-cursor.execute("SELECT id FROM users WHERE username = 'dev_user';")
-dev_id = cursor.fetchone()[0]
-
-# Insert dummy passwords linked to users
-# cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'google.com', 'john_doe', 'password123');", (john_id,))
-# cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'facebook.com', 'alice_wonder', 'fb_secure_pass');", (alice_id,))
-# cursor.execute("INSERT INTO passwords (user_id, site_name, username, password) VALUES (?, 'github.com', 'dev_user', 'gitpass!@#');", (dev_id,))
-
-conn.commit()
-
-print("Successfully created database and tables schema")
-
+# Commit any remaining changes (if any)
 conn.commit()

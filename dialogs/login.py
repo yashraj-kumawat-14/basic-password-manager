@@ -3,7 +3,7 @@ from PySide6.QtCore import Qt
 import sys
 import os
 
-# Add the project root to sys.path
+# Add the project root to sys.path for module imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
 from model.User import User
@@ -11,50 +11,49 @@ from model.Password import Password
 from dialogs.signup import Signup
 from dialogs.forgot_password import ForgotPassword
 
-# Login class for displaying login window and handling the logic of login
 class Login(QDialog):
+    """
+    Login class that creates a login window and handles user authentication.
+    """
     def __init__(self, parent=None):
-        # Initiation QDialog class
         super().__init__(parent)
         
-        self.setGeometry(100, 100, 420, 250)
+        self.setGeometry(100, 100, 420, 250)  # Set window size and position
+        self.user_id = None  # Initialize user_id as None
+        self.setWindowTitle("Login")  # Set window title
         
-        # Initialising self.user_id to None
-        self.user_id = None
-        
-        # Setting title to 'Login'
-        self.setWindowTitle("Login")
-        
-        # Creating Layouts
+        # Create layout
         layout = QGridLayout()
         
-        # Creating message label for displaying messages of error, success
+        # Create message label for feedback messages
         self.message_label = QLabel("Enter Your credentials")
+        self.message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.message_label.setStyleSheet("color: Black; font-size: 19px; padding:10px")
         
+        # Create labels and input fields
         username_label = QLabel("Username or Email:")
         password_label = QLabel("Password:")
+        username_label.setAlignment(Qt.AlignmentFlag.AlignRight)
+        password_label.setAlignment(Qt.AlignmentFlag.AlignRight)
         
         self.username_entry = QLineEdit()
         self.password_entry = QLineEdit()
         
+        # Create login button
         login_button = QPushButton("Login")
         login_button.clicked.connect(self.checkCredentials)
-
+        
+        # Create signup button
         signup_button = QPushButton("Sign Up")
         signup_button.clicked.connect(self.show_signup_form)
         
+        # Create forgot password link
         forgot_password_link = QLabel('<a href="#">Forgot Password?</a>')
         forgot_password_link.setAlignment(Qt.AlignmentFlag.AlignCenter)
         forgot_password_link.setOpenExternalLinks(False)  # Prevent opening a browser
         forgot_password_link.linkActivated.connect(self.forgot_password)
         
-        
-        self.message_label.setStyleSheet("color: Black; font-size: 19px; padding:10px")
-        
-        self.message_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        username_label.setAlignment(Qt.AlignmentFlag.AlignRight)
-        password_label.setAlignment(Qt.AlignmentFlag.AlignRight)
-        
+        # Add widgets to layout
         layout.addWidget(self.message_label, 0, 0, 1, 3)
         layout.addWidget(username_label, 1, 0, 1, 1)
         layout.addWidget(self.username_entry, 1, 1, 1, 2)
@@ -70,16 +69,15 @@ class Login(QDialog):
         self.setLayout(layout)
     
     def show_signup_form(self):
-        print('signup form')
+        """Displays the signup form dialog."""
         Signup(self).exec()
         
-    
     def forgot_password(self):
-        print("show forgot password window")
+        """Displays the forgot password dialog."""
         ForgotPassword(self).exec()
-
-
+    
     def checkCredentials(self):
+        """Checks user credentials and logs in if valid, otherwise shows an error message."""
         identifier = self.username_entry.text()
         password = self.password_entry.text()
         user_id = User().get_user_by_email(email=identifier, password=password)
@@ -88,25 +86,18 @@ class Login(QDialog):
             user_id = User().get_user_by_username(username=identifier, password=password)
         
         if user_id:
-            print("user exists")
             self.user_id = user_id
-            print(user_id, "user id is left")
-            self.accept()
+            self.accept()  # Close login window and proceed
         else:
-            print("user doesn't exist")
             QMessageBox.critical(self, "Login Failed", "Invalid username or password. Please try again.")
 
-        
-
 if __name__ == "__main__":
-    # Starting our login application #
-    
-    # Initiating eventloop
+    # Start the login application
     app = QApplication(sys.argv)
     
-    # Creating login window
+    # Create and display the login window
     window = Login()
     window.show()
     
-    # Starting the eventloop
+    # Start the event loop
     sys.exit(app.exec())

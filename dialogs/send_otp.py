@@ -16,7 +16,6 @@ class EmailSender:
     def send_email(self, recipient_email, subject, body):
         try:
             self.yag.send(recipient_email, subject, body)
-            print(f"Email sent to {recipient_email}")
         except Exception as e:
             print(f"Failed to send email: {e}")
 
@@ -26,8 +25,3 @@ class EmailSender:
         body = f"Your OTP is: {self.currentOtp}"
         self.send_email(recipient_email, subject, body)
         return self.currentOtp  # Returning OTP for verification use
-
-# # Example Usage
-# email_sender = EmailSender()
-# otp = email_sender.send_otp("recipient@example.com")
-# print(f"OTP sent: {otp}")
