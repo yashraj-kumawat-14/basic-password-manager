@@ -58,6 +58,12 @@ This project is licensed under the MIT License.
 ### Password Manager Dashboard
 ![Dashboard](screenshots/dashboard.png)
 
+### Add Password
+![Add Password](screenshots/add.png)
+
+### View Password
+![View Password](screenshots/view.png)
+
 
 ---
 A vault of security 🔒, crafted by Yashraj
