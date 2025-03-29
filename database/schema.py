@@ -3,9 +3,17 @@ Script to define and create the database schema for the password manager.
 """
 
 import sqlite3  # SQLite library for database operations
+import os       # For environment variable access
+from dotenv import load_dotenv  # To load .env file
+
+# Load environment variables from .env file
+load_dotenv()
+
+# Get the database name from the .env file, defaulting to "password_manager.db" if not set
+DB_NAME = os.getenv("DB_NAME", "password_manager.db")
 
 # Connect to the SQLite database (creates the file if it doesn't exist)
-conn = sqlite3.connect("password_manager.db")
+conn = sqlite3.connect(DB_NAME)
 
 # Create a cursor object to execute SQL commands
 cursor = conn.cursor()
@@ -50,7 +58,6 @@ CREATE TABLE IF NOT EXISTS users (
 
 # Commit the changes to the database
 conn.commit()
-
 
 # Commit any remaining changes (if any)
 conn.commit()
