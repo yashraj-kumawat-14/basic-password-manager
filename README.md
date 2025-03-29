@@ -21,18 +21,23 @@ A simple and secure **Password Manager** built using **PySide6 (Qt for Python)**
    git clone https://github.com/yashraj-kumawat-14/basic-password-manager
    cd basic-password-manager
    ```
-2. Install dependencies:
+2. Create a virtual environment:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   ```
+3. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-3. Create a `.env` file in the project root directory and add the following environment variables:
+4. Create a `.env` file in the project root directory and add the following environment variables:
    ```ini
    DB_NAME=your_database_name
-   EMAIL_SENDER=your_gmail@example.com
-   EMAIL_PASSWORD=your_gmail_app_password
+   EMAIL_SENDER=your_email@example.com
+   EMAIL_PASSWORD=your_email_password
    SECRET_KEY=your_secret_key_for_fernet
    ```
-4. Run the application:
+5. Run the application:
    ```bash
    python main.py
    ```
