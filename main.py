@@ -82,7 +82,7 @@ class Main(QWidget):
 
     def add_password(self):
         print("adding password")
-        add_password = AddPassword(parent=self)
+        add_password = AddPassword(parent=self, user_id=self.user_id)
         result = add_password.exec()
         print(result)
         if result == QDialog.Accepted:
@@ -107,7 +107,7 @@ class Main(QWidget):
         self.password_list.clear()
         count = 1
         for item in data:
-            print(item)
+            print(item, "item")
             row = QTreeWidgetItem(self.password_list, [str(count)])
             
             for i in range(row.columnCount()):
@@ -186,6 +186,8 @@ if __name__ == "__main__":
     if not user_id:
         print("Closing application")
         sys.exit(0)
+        
+    print("user id is : ", user_id)
     
     # Launch main window
     window = Main(user_id=user_id)

@@ -87,11 +87,30 @@ class User:
             return data[0] 
         return None
     
+    def get_user_by_email(self, email, password):
+        """Check if a user exits with the given username and password"""
+        query = "SELECT id FROM users WHERE email = ? AND password = ?"
+        self.cursor.execute(query, (email, password))
+        data = self.cursor.fetchone()
+        if data:
+            return data[0] 
+        return None
+    
+    def get_user_by_username(self, username, password):
+        """Check if a user exits with the given username and password"""
+        query = "SELECT id FROM users WHERE username = ? AND password = ?"
+        self.cursor.execute(query, (username, password))
+        data = self.cursor.fetchone()
+        if data:
+            return data[0] 
+        return None
+    
     def check_user_exists_by_email(self, email):
         """Check if a user exits with the given username and password"""
         query = "SELECT id FROM users WHERE email = ?"
         self.cursor.execute(query, (email, ))
         data = self.cursor.fetchone()
+        print("check_user_exists_by_email here data", data)
         if data:
             return data[0] 
         return None

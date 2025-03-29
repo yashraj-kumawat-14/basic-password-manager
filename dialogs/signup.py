@@ -82,10 +82,10 @@ class Signup(QDialog):
             print("Passwords do not match")
             return
         
-        user_id = User().add_user(username=username, email=email, password=password)
-        if user_id:
+        result = User().add_user(username=username, email=email, password=password)
+        if result:
+            print("result is ", result)
             print("User registered successfully")
-            self.user_id = user_id
             self.accept()
         else:
             print("User registration failed")

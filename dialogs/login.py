@@ -1,9 +1,4 @@
-# Login Dialog to display login window to user #
-
-
-# Importing necessary modules and libraries
-
-from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QApplication, QGridLayout, QPushButton, QSpacerItem, QSizePolicy
+from PySide6.QtWidgets import QDialog, QLabel, QLineEdit, QApplication, QGridLayout, QPushButton, QSpacerItem, QSizePolicy, QMessageBox
 from PySide6.QtCore import Qt
 import sys
 import os
@@ -11,11 +6,10 @@ import os
 # Add the project root to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
 
-
 from model.User import User
+from model.Password import Password
 from dialogs.signup import Signup
 from dialogs.forgot_password import ForgotPassword
-
 
 # Login class for displaying login window and handling the logic of login
 class Login(QDialog):
@@ -23,9 +17,9 @@ class Login(QDialog):
         # Initiation QDialog class
         super().__init__(parent)
         
-        self.setGeometry(100, 100, 350, 250)
+        self.setGeometry(100, 100, 420, 250)
         
-        # Initialising self.username to None
+        # Initialising self.user_id to None
         self.user_id = None
         
         # Setting title to 'Login'
@@ -37,8 +31,8 @@ class Login(QDialog):
         # Creating message label for displaying messages of error, success
         self.message_label = QLabel("Enter Your credentials")
         
-        username_label = QLabel("Username :")
-        password_label = QLabel("Password :")
+        username_label = QLabel("Username or Email:")
+        password_label = QLabel("Password:")
         
         self.username_entry = QLineEdit()
         self.password_entry = QLineEdit()
@@ -83,18 +77,25 @@ class Login(QDialog):
     def forgot_password(self):
         print("show forgot password window")
         ForgotPassword(self).exec()
-    
+
+
     def checkCredentials(self):
-        username = self.username_entry.text()
+        identifier = self.username_entry.text()
         password = self.password_entry.text()
-        user_id = User().check_user_exists(username=username, password=password)
-        if(user_id):
+        user_id = User().get_user_by_email(email=identifier, password=password)
+        
+        if not user_id:
+            user_id = User().get_user_by_username(username=identifier, password=password)
+        
+        if user_id:
             print("user exists")
             self.user_id = user_id
+            print(user_id, "user id is left")
             self.accept()
         else:
-            print("user don't exists")
-            self.reject()
+            print("user doesn't exist")
+            QMessageBox.critical(self, "Login Failed", "Invalid username or password. Please try again.")
+
         
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ from model.User import User
 from model.Password import Password
 
 class AddPassword(QDialog):
-    def __init__(self, parent=None, user_id=1):
+    def __init__(self, parent=None, user_id=None):
         super().__init__(parent=parent)
         self.user_id = user_id
 

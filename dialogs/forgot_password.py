@@ -11,24 +11,24 @@ from PySide6.QtWidgets import (
     QSizePolicy
 )
 
-import sys
 import os
 
 # Add the project root to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../")))
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+print(os.path.abspath(os.path.dirname(__file__)), "ting tong")
 
 from send_otp import EmailSender 
-
 from PySide6.QtCore import QTimer
 from model.User import User
 
 class ForgotPassword(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.otp=-1
+        self.otp = -1
 
         self.setWindowTitle("Forgot Password")
-        self.setMinimumSize(300, 200)  # Set minimum size for the dialog
+        self.setMinimumSize(300, 300)  # Increased size for new fields
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)  # Allow resizing
 
         self.email_label = QLabel("Email:")
@@ -46,25 +46,55 @@ class ForgotPassword(QDialog):
         self.resend_otp_button = QPushButton("Resend OTP")
         self.resend_otp_button.setEnabled(False)  # Initially disabled
 
+        self.new_password_label = QLabel("New Password:")
+        self.new_password_input = QLineEdit()
+        self.new_password_input.setPlaceholderText("Enter new password")
+        self.new_password_input.setEchoMode(QLineEdit.Password)
+        self.new_password_label.setVisible(True)  # Set to visible
+        self.new_password_input.setVisible(True)  # Set to visible
+        self.new_password_input.setEnabled(False)  # Initially disabled
+        
+        self.confirm_password_label = QLabel("Confirm Password:")
+        self.confirm_password_input = QLineEdit()
+        self.confirm_password_input.setPlaceholderText("Confirm new password")
+        self.confirm_password_input.setEchoMode(QLineEdit.Password)
+        self.confirm_password_label.setVisible(True)  # Set to visible
+        self.confirm_password_input.setVisible(True)  # Set to visible
+        self.confirm_password_input.setEnabled(False)  # Initially disabled
+        
+        self.reset_password_button = QPushButton("Reset Password")
+        self.reset_password_button.setEnabled(False)
+        self.reset_password_button.setVisible(False)
+
         self.timer = QTimer()
         self.timer.setInterval(20000)  # 20 seconds
         self.timer.timeout.connect(self.enable_resend_otp)
 
         self.send_otp_button.clicked.connect(self.send_otp)
         self.verify_button.clicked.connect(self.verify_otp)
+        self.reset_password_button.clicked.connect(self.reset_password)
 
         layout = QVBoxLayout()
+        layout.setSpacing(5)  # Decrease vertical spacing between widgets
+        layout.setContentsMargins(10, 10, 10, 10)  # Set margins around the layout
+
         layout.addWidget(self.email_label)
         layout.addWidget(self.email_input)
         layout.addWidget(self.otp_label)
         layout.addWidget(self.otp_input)
         
         button_layout = QHBoxLayout()
+        button_layout.setSpacing(5)  # Decrease horizontal spacing between buttons
         button_layout.addWidget(self.send_otp_button)
         button_layout.addWidget(self.verify_button)
         button_layout.addWidget(self.resend_otp_button)
         
         layout.addLayout(button_layout)
+        layout.addWidget(self.new_password_label)
+        layout.addWidget(self.new_password_input)
+        layout.addWidget(self.confirm_password_label)
+        layout.addWidget(self.confirm_password_input)
+        layout.addWidget(self.reset_password_button)
         
         self.setLayout(layout)
 
@@ -74,7 +104,7 @@ class ForgotPassword(QDialog):
             # Simulate sending OTP
             user_exists = User().check_user_exists_by_email(email=email)
             print("user exists = ", user_exists)
-            if(user_exists):
+            if user_exists:
                 self.otp = EmailSender().send_otp(recipient_email=email)
                 print(self.otp)
                 QMessageBox.information(self, "Success", "OTP sent to your email!")
@@ -84,17 +114,44 @@ class ForgotPassword(QDialog):
                 self.resend_otp_button.setEnabled(False)  # Disable resend button initially
                 self.timer.start()  # Start the timer
             else:
-                QMessageBox.critical(self, "User don't exist", "User doesn't exist for the given email. Retry again.")
+                QMessageBox.critical(self, "User  doesn't exist", "User  doesn't exist for the given email. Retry again.")
         else:
             QMessageBox.warning(self, "Error", "Please enter a valid email.")
 
     def verify_otp(self):
-        # Here you would implement the actual OTP verification logic
-        if(str(self.otp)==self.otp_input.text()):
-            print("otp verified")
-        else:
-            QMessageBox.critical(self, "Wrong OTP", "OTP was wrong try again.")
+        if str(self.otp) == self.otp_input.text():
+            print("OTP verified")
+            QMessageBox.information(self, "Success", "OTP verified successfully!")
             
+            # Disable OTP-related inputs and buttons
+            self.otp_input.setEnabled(False)
+            self.send_otp_button.setEnabled(False)
+            self.verify_button.setEnabled(False)
+            self.resend_otp_button.setEnabled(False)
+            self.email_input.setEnabled(False)
+            
+            # Enable new password fields and button
+            self.new_password_input.setEnabled(True)
+            self.confirm_password_input.setEnabled(True)
+            self.reset_password_button.setVisible(True)
+            self.reset_password_button.setEnabled(True)
+        else:
+            QMessageBox.critical(self, "Wrong OTP", "OTP was wrong, try again.")
+
+    def reset_password(self):
+        new_password = self.new_password_input.text()
+        confirm_password = self.confirm_password_input.text()
+        
+        if new_password and confirm_password:
+            if new_password == confirm_password:
+                user_id = User().check_user_exists_by_email(email=self.email_input.text())
+                User().update_user_password(user_id=user_id, new_password=new_password)
+                QMessageBox.information(self, "Success", "Password reset successfully!")
+                self.accept()
+            else:
+                QMessageBox.warning(self, "Error", "Passwords do not match. Try again.")
+        else:
+            QMessageBox.warning(self, "Error", "Please fill in all fields.")
 
     def enable_resend_otp(self):
         self.resend_otp_button.setEnabled(True)
